@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Graph Algorithm Visualizer</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.19.1/cytoscape.min.js"></script>
+</head>
+
+<body>
+    <div id="cy"></div>
+    <div id="controls">
+        <label for="num-nodes">Number of nodes:</label>
+        <input type="number" id="num-nodes" min="0" max="100" value="5">
+        <button id="run-algorithm">Run Algorithm</button>
+        <button id="pauseButton">Pause</button>
+        <button id="resumeButton">Resume</button>
+        <button id="resetButton">Reset</button>
+        <button id="addEdge">Add Edge</button>
+        <button id="addNode">Add Node</button>
+        <button id="deleteEdge">Delete Edge</button>
+        <button id="deleteNode">Delete Node</button>
+        <input type="checkbox" id="directed" name="directed" value="directed">
+    </div>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.min.js"></script>
+    <script src="/static/js/graph.js"></script>
+    <script src="/static/js/main.js"></script>
+</body>
+
+</html>

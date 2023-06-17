@@ -1,0 +1,21 @@
+body {
+    display: flex;
+}
+
+#right-frame {
+    width: 20%;
+    padding: 10px;
+}
+
+#cy {
+    width: 80%;
+    height: 100vh;
+}
+
+node {
+    background-color: #ffffff;
+}
+
+node.selected {
+    background-color: #ff0000;
+}
