@@ -92,6 +92,8 @@ const animationController = new AnimationController();
 let selectedNodes = [];
 let addEdgeMode = false;
 let addNodeMode = false;
+let deleteNodeMode = false;
+let deleteEdgeMode = false;
 
 function reset() {
     selectedNodes = [];
@@ -115,8 +117,20 @@ document.getElementById('addNode').addEventListener('click', function () {
     console.log('Add Node button clicked');
 });
 
+document.getElementById('deleteNode').addEventListener('click', function () {
+    reset();
+    deleteNodeMode = true;
+    console.log('Delete Node button clicked');
+});
 
-let graph = new CytoscapeGraph(document.getElementById('cy'), createGrid(5));
+document.getElementById('deleteEdge').addEventListener('click', function () {
+    reset();
+    deleteEdgeMode = true;
+    console.log('Delete Edge button clicked');
+});
+
+
+let graph = new CytoscapeGraph(document.getElementById('cy'), createEmptyGraph());
 
 
 

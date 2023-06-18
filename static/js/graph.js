@@ -38,25 +38,34 @@ class Graph {
     }
   }
 
-    removeNode(nodeId) {
-    if (this.isDirected) {
-        for (let otherNode in this.adjacencyList) {
-        this.adjacencyList[otherNode] = this.adjacencyList[otherNode].filter(node => node !== nodeId);
-        }
+  removeNode(nodeId) {
+    for (let otherNode in this.adjacencyList) {
+      this.adjacencyList[otherNode] = this.adjacencyList[otherNode].filter(node => node !== nodeId);
     }
+
     while (this.adjacencyList[nodeId].length > 0) {
         this.removeEdge(nodeId, this.adjacencyList[nodeId][0]);
     }
+
     delete this.adjacencyList[nodeId];
-    }
+  }
 
   removeEdge(node1, node2) {
     const edgeId = `${node1}-${node2}`;
     const reverseEdgeId = `${node2}-${node1}`;
 
-    this.adjacencyList[node1] = this.adjacencyList[node1].filter(node => node !== node2);
+    console.log(this.adjacencyList[node1])
+    // Log the type of the node1 variable
+    console.log(typeof node1)
+    // Log the type of the node2 variable
+    console.log(typeof node2)
+
+    this.adjacencyList[node1] = this.adjacencyList[node1].filter(node => node != node2);
+    console.log(this.adjacencyList[node1])
     if (!this.isDirected) {
-      this.adjacencyList[node2] = this.adjacencyList[node2].filter(node => node !== node1);
+      console.log(this.adjacencyList[node2])
+      this.adjacencyList[node2] = this.adjacencyList[node2].filter(node => node != node1);
+      console.log(this.adjacencyList[node2])
     }
 
     if (this.isWeighted) {
@@ -137,8 +146,28 @@ class CytoscapeGraph {
                 this.update();
             }
         }
+        if (deleteNodeMode) {
+          deleteNodeMode = false;
+            console.log(`Removing node ${evt.target.id()}`);
+            let node = evt.target;
+            this.graph.removeNode(node.id());
+            this.cy.remove(node);
+            this.update();
+        }
     });
 
+    this.cy.on('tap', 'edge', (evt) => {
+      if (deleteEdgeMode) {
+        deleteEdgeMode = false;
+        console.log(`Removing edge ${evt.target.id()}`)
+        let edge = evt.target;
+        this.graph.removeEdge(edge.source().id(), edge.target().id());
+        this.cy.remove(edge);
+        this.update();
+      }
+    });
+    this.runLayout();
+    this.update();
   }
 
   update() {
@@ -174,7 +203,7 @@ class CytoscapeGraph {
 
   runLayout() {
     let layout = this.cy.layout({
-      name: 'cose',
+      name: 'fcose',
       fit: true, // Whether to fit the viewport to the graph
       padding: 30, // Padding on fit
       avoidOverlap: true, // prevents node overlap
