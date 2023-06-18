@@ -1,21 +1,37 @@
-body {
+#main {
     display: flex;
-}
-
-#right-frame {
-    width: 20%;
-    padding: 10px;
-}
-
-#cy {
-    width: 80%;
     height: 100vh;
 }
 
-node {
-    background-color: #ffffff;
+#cy {
+    flex: 3;
+    background: #f0f0f0;
+    margin: 10px;
+    border-radius: 20px;
 }
 
-node.selected {
-    background-color: #ff0000;
+#sidebar {
+    flex: 1;
+    background-color: #FFFFFF;
+    padding: 20px;
+    box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.1);
+}
+
+#controls {
+    display: flex;
+    flex-direction: column;
+}
+
+#controls input,
+#controls button,
+#controls select {
+    margin-bottom: 10px;
+}
+
+#code-panel {
+    margin-top: 20px;
+    height: 200px;
+    border: 1px solid #CCCCCC;
+    padding: 10px;
+    overflow-y: scroll;
 }

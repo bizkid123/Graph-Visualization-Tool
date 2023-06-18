@@ -1,3 +1,6 @@
+
+
+
 const socket = io.connect('http://' + document.domain + ':' + location.port);
 
 class Step {
@@ -173,11 +176,57 @@ resumeButton.addEventListener('click', resumeHighlight);
 resetButton.addEventListener('click', resetHighlight);
 
 
-document.getElementById('run-algorithm').addEventListener('click', () => {
+document.getElementById('graph-creation-method').addEventListener('change', function() {
+  var method = this.value;
+  var numEdgesInput = document.getElementById('num-edges');
+  var numNodesInput = document.getElementById('num-nodes');
+
+  var nodeLabel = document.getElementById('node-label');
+  var edgeLabel = document.getElementById('edge-label');
+
+  if (method === 'random') {
+    numEdgesInput.style.display = 'block';
+    numNodesInput.style.display = 'block';
+    nodeLabel.innerText = 'Number of nodes:';
+    edgeLabel.innerText = 'Number of edges:';
+    nodeLabel.style.display = 'block';
+    edgeLabel.style.display = 'block';
+  } else if (method === 'grid') {
+    numEdgesInput.style.display = 'none';
+    numNodesInput.style.display = 'block';
+    nodeLabel.innerText = 'Grid Size (n x n):';
+    edgeLabel.style.display = 'none';
+    nodeLabel.style.display = 'block';
+  } else if (method === 'empty') {
+    numEdgesInput.style.display = 'none';
+    numNodesInput.style.display = 'none';
+    edgeLabel.style.display = 'none';
+    nodeLabel.style.display = 'none';
+  }
+  
+});
+
+document.getElementById('createGraph').addEventListener('click', () => {
+    const method = document.getElementById('graph-creation-method').value;
     const n = parseInt(document.getElementById('num-nodes').value);
+    const m = parseInt(document.getElementById('num-edges').value);
     
-    graph.reset(createGrid(n));
+    const directed = document.getElementById('directed').checked;
+
+    if (method === 'random') {
+        graph.reset(createRandomGraph(n, m, directed));
+    }
+    else if (method === 'grid') {
+        graph.reset(createGrid(n, directed));
+    }
+    else if (method === 'empty') {
+        graph.reset(createEmptyGraph(directed));
+    }
     resetHighlight();
+});
+
+
+document.getElementById('runAlgorithm').addEventListener('click', () => {
     socket.emit("run_algorithm", graph.graph.getAdjacencyList());
 });
 

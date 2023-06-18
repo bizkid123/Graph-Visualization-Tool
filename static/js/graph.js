@@ -104,9 +104,9 @@ class CytoscapeGraph {
           selector: 'edge',
           style: {
             'width': 3,
-            'line-color': '#ccc',
-            'target-arrow-color': '#ccc',
+            'line-color': '#000',
             'target-arrow-shape': this.graph.isDirected ? 'triangle' : 'none',
+            'target-arrow-color': '#000',
             'curve-style': 'bezier'
           }
         }
@@ -188,11 +188,13 @@ class CytoscapeGraph {
           }
           if (this.graph.isDirected || !(this.cy.$id(reverseEdgeId).nonempty())) {
             console.log(`Adding edge ${edgeId}`);
+            console.log('arrow shape: ' + (this.graph.isDirected ? 'triangle' : 'none'));
             let edgeData = {
                 id: edgeId,
                 source: nodeId,
                 target: neighborId,
-                curveStyle: !this.cy.$id(reverseEdgeId).nonempty() ? 'bezier' : 'haystack'
+                curveStyle: !this.cy.$id(reverseEdgeId).nonempty() ? 'bezier' : 'haystack',
+                targetArrowShape: this.graph.isDirected ? 'triangle' : 'none',
             };
 
             this.cy.add({ data: edgeData });
@@ -209,9 +211,39 @@ class CytoscapeGraph {
       avoidOverlap: true, // prevents node overlap
       avoidOverlapPadding: 10, // Extra spacing around nodes when avoidOverlap: true
     });
+    this.setStyle();
 
     layout.run();
   }
+
+  setStyle() {
+    const myStyle = [{
+        selector: 'node',
+        style: {
+          'background-color': 'white',
+          'border-color': 'black',
+          'border-width': '2px',
+          'border-style': 'solid',
+          'width': '50px',
+          'height': '50px',
+          'shape': 'ellipse',
+          'label': 'data(id)'
+        }
+      },
+      {
+        selector: 'edge',
+        style: {
+          'width': 3,
+          'line-color': '#000',
+          'target-arrow-shape': this.graph.isDirected ? 'triangle' : 'none',
+          'target-arrow-color': '#000',
+          'curve-style': 'bezier'
+        }
+      }
+    ]
+    this.cy.style(myStyle);
+  }
+    
 
   addNode(nodeId = null, x = null, y = null) {
     if (nodeId == null) {
@@ -249,7 +281,11 @@ class CytoscapeGraph {
 
   reset(newGraph) {
     this.cy.elements().remove();
+    
+
+    this.runLayout();
     this.graph = newGraph;
+    
     this.update();
     this.runLayout();
   }
@@ -259,8 +295,8 @@ function createEmptyGraph(isDirected = false) {
   return new Graph(isDirected);
 }
 
-function createGrid(n) {
-    const graph = new Graph();
+function createGrid(n, isDirected = false) {
+    const graph = new Graph(isDirected);
     for (let i = 0; i < n*n; i++) {
         graph.addNode(i);
     }
@@ -269,15 +305,15 @@ function createGrid(n) {
         if (i % n !== 0) {
             graph.addEdge(i, i-1);
         }
-        // if (i % n !== n-1) {
-        //     graph.addEdge(i, i+1);
-        // }
+        if (i % n !== n-1) {
+            graph.addEdge(i, i+1);
+        }
         if (i >= n) {
             graph.addEdge(i, i-n);
         }
-        // if (i < n*(n-1)) {
-        //     graph.addEdge(i, i+n);
-        // }
+        if (i < n*(n-1)) {
+            graph.addEdge(i, i+n);
+        }
     }
     return graph;
 }

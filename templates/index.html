@@ -8,23 +8,58 @@
 </head>
 
 <body>
-    <div id="cy"></div>
-    <div id="controls">
-        <label for="num-nodes">Number of nodes:</label>
-        <input type="number" id="num-nodes" min="0" max="100" value="5">
-        <button id="run-algorithm">Run Algorithm</button>
-        <button id="pauseButton">Pause</button>
-        <button id="resumeButton">Resume</button>
-        <button id="resetButton">Reset</button>
-        <button id="addEdge">Add Edge</button>
-        <button id="addNode">Add Node</button>
-        <button id="deleteEdge">Delete Edge</button>
-        <button id="deleteNode">Delete Node</button>
-        <input type="checkbox" id="directed" name="directed" value="directed">
+    <div id="main">
+        <div id="cy"></div>
+        <div id="sidebar">
+            <div id="controls">
+                <label for="algorithm">Algorithm:</label>
+                <select id="algorithm">
+                    <option value="dfs">DFS</option>
+                    <!-- Add other algorithms here -->
+                </select>
+                <label for="graph-creation-method">Graph Creation Method:</label>
+                <select id="graph-creation-method">
+                    <option value="grid">Grid</option>
+                    <option value="random">Random</option>
+                    <option value="empty">Empty</option>
+                    <!-- Add other methods here -->
+                </select>
+
+                <label id="node-label" for="num-nodes">Number of nodes:</label>
+                <input type="number" id="num-nodes" min="0" max="100" value="5">
+                
+                <label id="edge-label" for="num-edges" style="display: none;">Number of edges:</label>
+                <input type="number" id="num-edges" min="0" max="100" value="5" style="display: none;">
+
+                <label for="directed">Directed:</label>
+                <input type="checkbox" id="directed" name="directed" value="directed">
+
+
+                <button id="createGraph">Create Graph</button>
+                <button id="runAlgorithm">Run Algorithm</button>
+                <button id="pauseButton">Pause</button>
+                <button id="resumeButton">Resume</button>
+                <button id="resetButton">Reset</button>
+                <button id="addEdge">Add Edge</button>
+                <button id="addNode">Add Node</button>
+                <button id="deleteEdge">Delete Edge</button>
+                <button id="deleteNode">Delete Node</button>
+            </div>
+            <div id="code-panel">
+                <code>
+                <!-- Code goes here -->
+                </code>
+            </div>
+        </div>
     </div>
+
     <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.min.js"></script>
+    <script src="https://unpkg.com/layout-base/layout-base.js"></script>
+    <script src="https://unpkg.com/cose-base/cose-base.js"></script>
+    <script src="https://unpkg.com/cytoscape-fcose/cytoscape-fcose.js"></script>
     <script src="/static/js/graph.js"></script>
     <script src="/static/js/main.js"></script>
+    
 </body>
 
 </html>
