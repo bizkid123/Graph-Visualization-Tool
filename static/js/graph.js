@@ -110,7 +110,9 @@ class CytoscapeGraph {
             'curve-style': 'bezier'
           }
         }
-      ]
+      ],
+      minZoom: .3, // minimum zoom level
+      maxZoom: 10, // maximum zoom level
     });
     
     this.cy.on('tap', (event) => {
@@ -119,7 +121,6 @@ class CytoscapeGraph {
         const y = event.position.y;
         const nodeId = this.graph.nextNodeId();
         this.addNode(nodeId, x, y);
-        addNodeMode = false;
       }
     });
 
@@ -147,7 +148,6 @@ class CytoscapeGraph {
             }
         }
         if (deleteNodeMode) {
-          deleteNodeMode = false;
             console.log(`Removing node ${evt.target.id()}`);
             let node = evt.target;
             this.graph.removeNode(node.id());
@@ -158,7 +158,6 @@ class CytoscapeGraph {
 
     this.cy.on('tap', 'edge', (evt) => {
       if (deleteEdgeMode) {
-        deleteEdgeMode = false;
         console.log(`Removing edge ${evt.target.id()}`)
         let edge = evt.target;
         this.graph.removeEdge(edge.source().id(), edge.target().id());
@@ -168,6 +167,18 @@ class CytoscapeGraph {
     });
     this.runLayout();
     this.update();
+  }
+
+  panCenter() {
+    // Then, calculate the bounding box of all elements
+    let boundingBox = this.cy.elements().boundingBox();
+
+    // Calculate the center of the bounding box
+    let centerX = (boundingBox.x1 + boundingBox.x2) / 2;
+    let centerY = (boundingBox.y1 + boundingBox.y2) / 2;
+
+    // Pan to the center of the bounding box
+    this.cy.pan({ x: centerX, y: centerY });
   }
 
   update() {
@@ -295,7 +306,7 @@ function createEmptyGraph(isDirected = false) {
   return new Graph(isDirected);
 }
 
-function createGrid(n, isDirected = false) {
+function createGridGraph(n, isDirected = false) {
     const graph = new Graph(isDirected);
     for (let i = 0; i < n*n; i++) {
         graph.addNode(i);
@@ -316,4 +327,51 @@ function createGrid(n, isDirected = false) {
         }
     }
     return graph;
+}
+
+function createRandomGraph(n, m, isDirected = false) {
+    console.log(isDirected)
+    // Create an array to hold the adjacency list
+    let graph = new Array(n).fill(0).map(() => []);
+
+    // Calculate maximum number of edges based on whether the graph is directed or undirected
+    let maxEdges = isDirected ? n * (n - 1) : n * (n - 1) / 2;
+
+    // Ensure that m is not larger than the maximum number of edges
+    m = Math.min(m, maxEdges);
+
+    // Array to hold all possible edges
+    let possibleEdges = [];
+    for (let i = 0; i < n; i++) {
+        for (let j = 0; j < n; j++) {
+            if (i != j) possibleEdges.push([i, j]);
+        }
+    }
+
+    // Shuffle the possibleEdges array
+    for (let i = possibleEdges.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        [possibleEdges[i], possibleEdges[j]] = [possibleEdges[j], possibleEdges[i]];
+    }
+
+    // Add m edges to the graph
+    for (let i = 0; i < m; i++) {
+        let edge = possibleEdges[i];
+        graph[edge[0]].push(edge[1]);
+        if (!isDirected) graph[edge[1]].push(edge[0]);
+    }
+
+    const graphObj = new Graph(isDirected);
+    
+    for (let i = 0; i < n; i++) {
+        graphObj.addNode(i);
+    }
+    for (let i = 0; i < n; i++) {
+        graph[i].forEach((neighbor) => {
+            graphObj.addEdge(i, neighbor);
+        });
+    }
+  
+  
+    return graphObj;
 }
