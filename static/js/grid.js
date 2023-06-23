@@ -230,7 +230,6 @@ class CytoscapeGrid {
 
     reset(grid) {
         this.grid = grid;
-        console.log(this.grid);
         this.cy.elements().remove();
         this.update();
     }

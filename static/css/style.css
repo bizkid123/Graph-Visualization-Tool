@@ -3,6 +3,88 @@
     height: 100vh;
 }
 
+
+#graph-area {
+    flex: 3;
+    margin: 10px;
+    border-radius: 20px;
+    background-color: #f0f0f0;
+    display: flex;
+    /* Add flex display */
+    flex-direction: column;
+    /* Stack child elements vertically */
+}
+
+#controller-area {
+    /* ...existing styles... */
+    flex: 0;
+    /* Take up minimum space */
+}
+
+#cy {
+    flex: 1;
+    /* Take up remaining space */
+    overflow: hidden;
+    position: relative;
+}
+
+#controller-area {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#algorithm-inputs {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 66%;
+}
+
+.form-group {
+    margin: 0 10px;
+}
+
+#runAlgorithm {
+    margin-top: 10px;
+    margin-left: 10px;
+}
+
+#slider-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 66%;
+}
+
+#slider {
+    width: 80%;
+}
+
+#play-pause,
+#step-back,
+#step-forward {
+    margin: 0 10px;
+    transition: background-color 0.3s ease;
+}
+
+#play-pause:hover,
+#step-back:hover,
+#step-forward:hover {
+    background-color: #e0e0e0;
+}
+
+#play-pause[disabled] i,
+#step-back[disabled] i,
+#step-forward[disabled] i {
+    color: #888888;
+    /* Adjust the desired gray color */
+}
+
+
+
+
 #code-card,
 #variable-card {
     margin-top: 0px;
@@ -153,12 +235,6 @@
     width: 100%;
 }
 
-#cy {
-    flex: 3;
-    background: #f0f0f0;
-    margin: 10px;
-    border-radius: 20px;
-}
 
 #sidebar {
     flex: 1;

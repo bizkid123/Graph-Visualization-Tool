@@ -1,173 +1,304 @@
 <!DOCTYPE html>
 <html>
-
-<head>
+  <head>
     <title>Graph Algorithm Visualizer</title>
-    <link rel="stylesheet" href="/static/css/style.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.19.1/cytoscape.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/prismjs@1.24.1/themes/prism.css" rel="stylesheet" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/prismjs@1.24.1/themes/prism.css"
+      rel="stylesheet"
+    />
 
-</head>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+  </head>
 
-<body>
+  <body>
     <div id="main">
-        <div id="cy"></div>
-        <div id="sidebar" class="container">
-            <ul class="nav nav-tabs">
-                <li class="nav-item">
-                    <a class="nav-link active" data-toggle="tab" href="#algorithm-tab">Algorithm</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-toggle="tab" href="#input-tab">Input</a>
-                </li>
+      <div id="sidebar" class="container">
+        <ul class="nav nav-tabs">
+          <li class="nav-item">
+            <a class="nav-link active" data-toggle="tab" href="#input-tab"
+              >Input</a
+            >
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#algorithm-tab"
+              >Algorithm</a
+            >
+          </li>
+        </ul>
+
+        <div class="tab-content">
+          <div class="tab-pane active" id="input-tab">
+            <ul class="nav nav-pills mb-3" id="input-pills-tab" role="tablist">
+              <li class="nav-item" role="presentation">
+                <a
+                  class="nav-link active"
+                  id="graph-tab"
+                  data-toggle="pill"
+                  href="#graph"
+                  role="tab"
+                  >Graph</a
+                >
+              </li>
+              <li class="nav-item" role="presentation">
+                <a
+                  class="nav-link"
+                  id="array-tab"
+                  data-toggle="pill"
+                  href="#array"
+                  role="tab"
+                  >Array</a
+                >
+              </li>
             </ul>
+            <div class="tab-content" id="input-pills-tabContent">
+              <div class="tab-pane fade show active" id="graph" role="tabpanel">
+                <!-- Graph Configuration -->
+                <label for="graph-creation-method"
+                  >Graph Creation Method:</label
+                >
+                <select id="graph-creation-method" class="form-control">
+                  <option value="random">Random</option>
+                  <option value="grid">Grid</option>
+                  <option value="empty">Empty</option>
+                  <!-- Add other methods here -->
+                </select>
+                <label for="num-nodes" id="num-nodes-label"
+                  >Number of Nodes:</label
+                >
+                <input
+                  type="number"
+                  id="num-nodes"
+                  min="0"
+                  max="100"
+                  value="10"
+                  class="form-control"
+                />
+                <label for="num-edges" id="num-edges-label"
+                  >Number of Edges:</label
+                >
+                <input
+                  type="number"
+                  id="num-edges"
+                  min="0"
+                  max="100"
+                  value="15"
+                  class="form-control"
+                />
 
-            <div class="tab-content">
-                <div class="tab-pane active" id="algorithm-tab">
-                    <!-- Algorithm Tab Content -->
-                    <div class="form-group">
-                        <label for="algorithm" id="algorithm-label">Algorithm:</label>
-                        <select id="algorithm" class="form-control">
-                            <option value="dfs">DFS</option>
-                            <!-- Add other algorithms here -->
-                        </select>
-                    </div>
+                <div class="custom-control custom-switch">
+                  <input
+                    type="checkbox"
+                    class="custom-control-input"
+                    id="directed"
+                  />
+                  <label class="custom-control-label" for="directed"
+                    >Directed</label
+                  >
+                </div>
 
-                    <div class="btn-group">
-                        <button id="runAlgorithm" class="btn btn-primary">Run Algorithm</button>
-                        <button id="pauseButton" class="btn btn-warning">Pause</button>
-                        <button id="resumeButton" class="btn btn-success">Resume</button>
-                        <button id="resetButton" class="btn btn-danger">Reset</button>
+                <button id="createGraph" class="btn btn-success create-btn">
+                  Create Graph
+                </button>
+
+                <div class="btn-group">
+                  <button id="addEdge" class="btn btn-primary">Add Edge</button>
+                  <button id="addNode" class="btn btn-primary">Add Node</button>
+                  <button id="deleteEdge" class="btn btn-danger">
+                    Delete Edge
+                  </button>
+                  <button id="deleteNode" class="btn btn-danger">
+                    Delete Node
+                  </button>
+                </div>
+                <!-- <textarea id="adjacency-list" placeholder="Enter adjacency list here"></textarea> -->
+                <div class="accordion" id="graph-accordion">
+                  <div class="card">
+                    <div class="card-header" id="graph-manual-input-header">
+                      <h2 class="mb-0">
+                        <button
+                          class="btn btn-link btn-block text-left collapsed"
+                          type="button"
+                          data-toggle="collapse"
+                          data-target="#graph-manual-input"
+                          aria-expanded="false"
+                          aria-controls="graph-manual-input"
+                        >
+                          Or Enter Adjacency List
+                        </button>
+                      </h2>
                     </div>
-                    <div class="card" id="code-card">
-                        <div class="card-header">
-                            Python Code
-                        </div>
-                        <div class="card-body">
-                            <pre id="code" class="language-python"><code class="language-python">
+                    <div
+                      id="graph-manual-input"
+                      class="collapse"
+                      aria-labelledby="graph-manual-input-header"
+                      data-parent="#graph-accordion"
+                    >
+                      <div class="card-body">
+                        <textarea
+                          id="adjacency-list"
+                          placeholder="Enter adjacency list here"
+                        ></textarea>
+                        <button
+                          id="submitAdjacencyList"
+                          class="btn btn-success create-btn"
+                        >
+                          Submit
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="tab-pane fade" id="array" role="tabpanel">
+                <!-- Array Configuration -->
+                <label for="num-rows">Number of rows:</label>
+                <input
+                  type="number"
+                  id="num-rows"
+                  min="0"
+                  max="100"
+                  value="5"
+                  class="form-control"
+                />
+                <label for="num-columns">Number of columns:</label>
+                <input
+                  type="number"
+                  id="num-columns"
+                  min="0"
+                  max="100"
+                  value="5"
+                  class="form-control"
+                />
+                <button id="createArray" class="btn btn-success create-btn">
+                  Create Array
+                </button>
+                <!-- <textarea id="array-input" placeholder="Enter array here"></textarea> -->
+                <div class="accordion" id="array-accordion">
+                  <div class="card">
+                    <div class="card-header" id="array-manual-input-header">
+                      <h2 class="mb-0">
+                        <button
+                          class="btn btn-link btn-block text-left collapsed"
+                          type="button"
+                          data-toggle="collapse"
+                          data-target="#array-manual-input"
+                          aria-expanded="false"
+                          aria-controls="array-manual-input"
+                        >
+                          Or Enter Array
+                        </button>
+                      </h2>
+                    </div>
+                    <div
+                      id="array-manual-input"
+                      class="collapse"
+                      aria-labelledby="array-manual-input-header"
+                      data-parent="#array-accordion"
+                    >
+                      <div class="card-body">
+                        <textarea
+                          id="array-input"
+                          placeholder="Enter array here"
+                        ></textarea>
+                        <button
+                          id="submitArray"
+                          class="btn btn-success create-btn"
+                        >
+                          Submit
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tab-pane" id="algorithm-tab">
+            <!-- Algorithm Tab Content -->
+            <div class="form-group">
+              <label for="algorithm" id="algorithm-label">Algorithm:</label>
+              <select id="algorithm" class="form-control">
+                <option value="dfs">DFS</option>
+                <!-- Add other algorithms here -->
+              </select>
+            </div>
+
+            <div class="card" id="code-card">
+              <div class="card-header">Python Code</div>
+              <div class="card-body">
+                <pre
+                  id="code"
+                  class="language-python"
+                ><code class="language-python">
                                 # Your Python code goes here
                             </code></pre>
-                        </div>
-                    </div>
-
-                    <div class="card" id="variable-card">
-                        <div class="card-header">
-                            Variable Explorer
-                        </div>
-                        <div class="card-body" id="variable-explorer">
-                            <table id="variables" class="table">
-                                <thead>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Value</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <!-- Variables will be inserted here -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                </div>
-                <div class="tab-pane" id="input-tab">
-                    <ul class="nav nav-pills mb-3" id="input-pills-tab" role="tablist">
-                        <li class="nav-item" role="presentation">
-                            <a class="nav-link active" id="graph-tab" data-toggle="pill" href="#graph"
-                                role="tab">Graph</a>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <a class="nav-link" id="array-tab" data-toggle="pill" href="#array" role="tab">Array</a>
-                        </li>
-                    </ul>
-                    <div class="tab-content" id="input-pills-tabContent">
-                        <div class="tab-pane fade show active" id="graph" role="tabpanel">
-                            <!-- Graph Configuration -->
-                            <label for="graph-creation-method">Graph Creation Method:</label>
-                            <select id="graph-creation-method" class="form-control">
-                                <option value="random">Random</option>
-                                <option value="grid">Grid</option>
-                                <option value="empty">Empty</option>
-                                <!-- Add other methods here -->
-                            </select>
-                            <label for="num-nodes" id="num-nodes-label">Number of Nodes:</label>
-                            <input type="number" id="num-nodes" min="0" max="100" value="10" class="form-control">
-                            <label for="num-edges" id="num-edges-label">Number of Edges:</label>
-                            <input type="number" id="num-edges" min="0" max="100" value="15" class="form-control">
-
-                            <div class="custom-control custom-switch">
-                                <input type="checkbox" class="custom-control-input" id="directed">
-                                <label class="custom-control-label" for="directed">Directed</label>
-                            </div>
-
-                            <button id="createGraph" class="btn btn-success create-btn">Create Graph</button>
-
-                            <div class="btn-group">
-                                <button id="addEdge" class="btn btn-primary">Add Edge</button>
-                                <button id="addNode" class="btn btn-primary">Add Node</button>
-                                <button id="deleteEdge" class="btn btn-danger">Delete Edge</button>
-                                <button id="deleteNode" class="btn btn-danger">Delete Node</button>
-                            </div>
-                            <!-- <textarea id="adjacency-list" placeholder="Enter adjacency list here"></textarea> -->
-                                <div class="accordion" id="graph-accordion">
-                                    <div class="card">
-                                        <div class="card-header" id="graph-manual-input-header">
-                                            <h2 class="mb-0">
-                                                <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse"
-                                                    data-target="#graph-manual-input" aria-expanded="false" aria-controls="graph-manual-input">
-                                                    Or Enter Adjacency List
-                                                </button>
-                                            </h2>
-                                        </div>
-                                        <div id="graph-manual-input" class="collapse" aria-labelledby="graph-manual-input-header"
-                                            data-parent="#graph-accordion">
-                                            <div class="card-body">
-                                                <textarea id="adjacency-list" placeholder="Enter adjacency list here"></textarea>
-                                                <button id="submitAdjacencyList" class="btn btn-success create-btn">Submit</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                        </div>
-                        <div class="tab-pane fade" id="array" role="tabpanel">
-                            <!-- Array Configuration -->
-                            <label for="num-rows">Number of rows:</label>
-                            <input type="number" id="num-rows" min="0" max="100" value="5" class="form-control">
-                            <label for="num-columns">Number of columns:</label>
-                            <input type="number" id="num-columns" min="0" max="100" value="5" class="form-control">
-                            <button id="createArray" class="btn btn-success create-btn">Create Array</button>
-                            <!-- <textarea id="array-input" placeholder="Enter array here"></textarea> -->
-                                <div class="accordion" id="array-accordion">
-                                    <div class="card">
-                                        <div class="card-header" id="array-manual-input-header">
-                                            <h2 class="mb-0">
-                                                <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse"
-                                                    data-target="#array-manual-input" aria-expanded="false" aria-controls="array-manual-input">
-                                                    Or Enter Array
-                                                </button>
-                                            </h2>
-                                        </div>
-                                        <div id="array-manual-input" class="collapse" aria-labelledby="array-manual-input-header"
-                                            data-parent="#array-accordion">
-                                            <div class="card-body">
-                                                <textarea id="array-input" placeholder="Enter array here"></textarea>
-                                                <button id="submitArray" class="btn btn-success create-btn">Submit</button>
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                        </div>
-                    </div>
-                </div>
+              </div>
             </div>
+
+            <div class="card" id="variable-card">
+              <div class="card-header">Variable Explorer</div>
+              <div class="card-body" id="variable-explorer">
+                <table id="variables" class="table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Value</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- Variables will be inserted here -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
+      <div id="graph-area">
+        <div id="controller-area">
+          <div id="algorithm-inputs">
+            <button id="run-algorithm" class="btn btn-primary">
+              Run Algorithm
+            </button>
+          </div>
+
+          <div id="slider-container">
+            <button id="play-pause" disabled>
+              <i class="fas fa-play"></i>
+            </button>
+            <button id="step-back" disabled>
+              <i class="fas fa-backward"></i>
+            </button>
+            <input
+              type="range"
+              id="slider"
+              class="slider"
+              min="0"
+              max="100"
+              value="0"
+              disabled
+            />
+            <button id="step-forward" disabled>
+              <i class="fas fa-forward"></i>
+            </button>
+          </div>
+        </div>
+        <div id="cy"></div>
+      </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/prismjs@1.24.1/prism.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/prismjs@1.24.1/components/prism-python.min.js"></script>
 
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>    
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.min.js"></script>
@@ -177,7 +308,5 @@
     <script src="/static/js/graph.js"></script>
     <script src="/static/js/grid.js"></script>
     <script src="/static/js/main.js"></script>
-    
-</body>
-
+  </body>
 </html>
