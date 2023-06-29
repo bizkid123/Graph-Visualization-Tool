@@ -51,3 +51,4 @@ if __name__ == "__main__":
     from algorithms.debugger import debug_module
 
     socketio.run(app, allow_unsafe_werkzeug=True)
+

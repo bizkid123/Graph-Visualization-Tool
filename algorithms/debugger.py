@@ -9,15 +9,17 @@ class DebugModuleDebugger:
         self.exclude_vars = exclude_vars
 
     def debug_module(self, module, function_name, *args, **kwargs):
+        # self.animation_info = []
         if function_name not in dir(module):
             return
-
         # Get the function
         function = getattr(module, function_name)
-
-        module.__dict__["highlightNode"] = self.highlightNode
-        module.__dict__["highlightEdge"] = self.highlightEdge
-
+        # Loop over all methods in the 'self' object (which should be an instance of the class)
+        for method_name in dir(self):
+            method = getattr(self, method_name)
+            if callable(method) and getattr(method, "is_decorated", False):
+                # If method is decorated, add it to the module's dictionary
+                module.__dict__[method_name] = method
         # Execute the code line by line
         try:
             sys.settrace(self.trace)
@@ -45,27 +47,31 @@ class DebugModuleDebugger:
                 }
             )
         if event == "call":
-            if frame.f_code.co_name == "highlightNode":
-                return  # Do nothing for highlightNode calls
-            elif frame.f_code.co_name == "highlightEdge":
+            if frame.f_code.co_name == "wrapper":
                 return
 
         return self.trace
 
-    def highlightNode(self, node, color):
-        # Disable tracing
-        sys.settrace(None)
-        self.animation_info.pop()
-        self.animation_info.append({"highlight_node": {"node": node, "color": color}})
-        sys.settrace(self.trace)
+    def trace_decorator(func):
+        def wrapper(self, *args, **kwargs):
+            sys.settrace(None)
+            self.animation_info.pop()
+            result = func(self, *args, **kwargs)
+            sys.settrace(self.trace)
+            return result
 
+        wrapper.is_decorated = True  # Add attribute to decorated function
+        return wrapper
+
+    @trace_decorator
+    def highlightNode(self, node, color):
+        self.animation_info.append({"highlight_node": {"node": node, "color": color}})
+
+    @trace_decorator
     def highlightEdge(self, source, target, color):
-        sys.settrace(None)
-        self.animation_info.pop()
         self.animation_info.append(
             {"highlight_edge": {"source": source, "target": target, "color": color}}
         )
-        sys.settrace(self.trace)
 
 
 def debug_module(module, function_name, exclude_vars, *args, **kwargs):
