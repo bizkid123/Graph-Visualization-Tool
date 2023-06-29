@@ -16,6 +16,7 @@ class DebugModuleDebugger:
         function = getattr(module, function_name)
 
         module.__dict__["highlightNode"] = self.highlightNode
+        module.__dict__["highlightEdge"] = self.highlightEdge
 
         # Execute the code line by line
         try:
@@ -46,6 +47,9 @@ class DebugModuleDebugger:
         if event == "call":
             if frame.f_code.co_name == "highlightNode":
                 return  # Do nothing for highlightNode calls
+            elif frame.f_code.co_name == "highlightEdge":
+                return
+
         return self.trace
 
     def highlightNode(self, node, color):
@@ -53,6 +57,14 @@ class DebugModuleDebugger:
         sys.settrace(None)
         self.animation_info.pop()
         self.animation_info.append({"highlight_node": {"node": node, "color": color}})
+        sys.settrace(self.trace)
+
+    def highlightEdge(self, source, target, color):
+        sys.settrace(None)
+        self.animation_info.pop()
+        self.animation_info.append(
+            {"highlight_edge": {"source": source, "target": target, "color": color}}
+        )
         sys.settrace(self.trace)
 
 

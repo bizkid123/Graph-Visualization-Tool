@@ -18,8 +18,11 @@ def init_app():
     emit("display_code", {"code": inspect.getsource(dfs)})
 
 
+def highlightEdge(source, target, color):
+    emit("highlight_edge", {"source": source, "target": target, "color": color})
+
+
 def highlightNode(node, color):
-    return
     emit("highlight_node", {"node": node, "color": color})
 
 
