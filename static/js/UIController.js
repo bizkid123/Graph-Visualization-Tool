@@ -44,12 +44,12 @@ class UIController {
         "click",
         this.graphController.createGraph.bind(this.graphController)
       );
-    // document
-    //   .getElementById("createArray")
-    //   .addEventListener(
-    //     "click",
-    //     this.graphController.createArray.bind(this.graphController)
-    //   );
+    document
+      .getElementById("createArray")
+      .addEventListener(
+        "click",
+        this.graphController.createArray.bind(this.graphController)
+      );
   }
 
   setupAlgorithmControl() {
@@ -215,5 +215,194 @@ class UIController {
         document.getElementById("variables").innerHTML = prevHTML;
       };
     };
+  }
+
+  addArrayInputSet(name) {
+    const container = document.getElementById("input-tab");
+
+    // Create the main container
+    const arrayContainer = document.createElement("div");
+    arrayContainer.id = `${name}_array`;
+    arrayContainer.classList.add("tab-pane", "fade");
+
+    // Number of Rows Input
+    createLabeledInput(
+      arrayContainer,
+      `${name}_num-rows`,
+      "Number of rows:",
+      "number",
+      null,
+      5
+    );
+
+    // Number of Columns Input
+    createLabeledInput(
+      arrayContainer,
+      `${name}_num-columns`,
+      "Number of columns:",
+      "number",
+      null,
+      5
+    );
+
+    // Create Array Button
+    createButton(
+      arrayContainer,
+      `${name}_createArray`,
+      "Create Array",
+      "btn btn-success create-btn"
+    );
+
+    // Textarea for array input
+    createLabeledInput(
+      arrayContainer,
+      `${name}_array-input`,
+      "Or Enter Array",
+      "textarea"
+    );
+
+    // Append the arrayContainer to the main container
+    container.appendChild(arrayContainer);
+  }
+
+  addValue(name) {
+    return;
+  }
+
+  addGraph(name) {
+    const container = document.getElementById("input-tab");
+
+    // Create the main container
+    const graphContainer = document.createElement("div");
+    graphContainer.id = `${name}_graph`;
+    graphContainer.classList.add("tab-pane", "fade", "show", "active");
+
+    // Creation Method Select
+    createLabeledInput(
+      graphContainer,
+      `${name}_graph-creation-method`,
+      "Graph Creation Method:",
+      "select",
+      ["Random", "Grid", "Empty"]
+    );
+
+    // Number of Nodes Input
+    createLabeledInput(
+      graphContainer,
+      `${name}_num-nodes`,
+      "Number of Nodes:",
+      "number",
+      null,
+      10
+    );
+
+    // Number of Edges Input
+    createLabeledInput(
+      graphContainer,
+      `${name}_num-edges`,
+      "Number of Edges:",
+      "number",
+      null,
+      15
+    );
+
+    // Directed Checkbox
+    createLabeledInput(
+      graphContainer,
+      `${name}_directed`,
+      "Directed",
+      "checkbox"
+    );
+
+    // Create Graph Button
+    createButton(
+      graphContainer,
+      `${name}_createGraph`,
+      "Create Graph",
+      "btn btn-success create-btn"
+    );
+
+    // Node/Edge operation buttons
+    createButton(
+      graphContainer,
+      `${name}_addEdge`,
+      "Add Edge",
+      "btn btn-primary"
+    );
+    createButton(
+      graphContainer,
+      `${name}_addNode`,
+      "Add Node",
+      "btn btn-primary"
+    );
+    createButton(
+      graphContainer,
+      `${name}_deleteEdge`,
+      "Delete Edge",
+      "btn btn-danger"
+    );
+    createButton(
+      graphContainer,
+      `${name}_deleteNode`,
+      "Delete Node",
+      "btn btn-danger"
+    );
+
+    // Textarea for adjacency list
+    createLabeledInput(
+      graphContainer,
+      `${name}_adjacency-list`,
+      "Or Enter Adjacency List",
+      "textarea"
+    );
+
+    // Append the graphContainer to the main container
+    container.appendChild(graphContainer);
+  }
+
+  createLabeledInput(
+    parent,
+    id,
+    labelText,
+    type,
+    options = null,
+    value = null
+  ) {
+    const label = document.createElement("label");
+    label.htmlFor = id;
+    label.innerText = labelText;
+    parent.appendChild(label);
+
+    let input;
+    if (type === "select") {
+      input = document.createElement("select");
+      options.forEach((optionValue) => {
+        const option = document.createElement("option");
+        option.value = optionValue.toLowerCase();
+        option.innerText = optionValue;
+        input.appendChild(option);
+      });
+    } else if (type === "textarea") {
+      input = document.createElement("textarea");
+      input.placeholder = labelText;
+    } else {
+      input = document.createElement("input");
+      input.type = type;
+      if (value !== null) {
+        input.value = value;
+      }
+    }
+
+    input.id = id;
+    input.classList.add("form-control");
+    parent.appendChild(input);
+  }
+
+  createButton(parent, id, buttonText, className) {
+    const button = document.createElement("button");
+    button.id = id;
+    button.innerText = buttonText;
+    button.className = className;
+    parent.appendChild(button);
   }
 }
